@@ -114,11 +114,11 @@ func stringInSlice(element string, list []string) bool {
 }
 
 func cleanIpv4(ips []string) []string {
-	for index := 0; index < len(ips); index++ {
-		ips[index] = strings.Replace(ips[index], "[", "", -1)
-		ips[index] = strings.Replace(ips[index], "]", "", -1)
-	}
-	return ips
+    for index, val := range ips {
+        ips[index] = strings.Replace(val, "[", "", -1)
+        ips[index] = strings.Replace(val, "]", "", -1)
+    }
+    return ips
 }
 
 func cleanUrls(urls []string) []string {
