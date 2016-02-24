@@ -101,9 +101,6 @@ var (
 
 )
 
-
-
-
 // Snort Signatures
 // Yara Rules
 
@@ -136,32 +133,30 @@ func cleanUrls(urls []string) []string {
 }
 
 func cleanDomains(domains []string) []string {
-	var cleanDomains []string
+    var cleanDomains []string
+    for _, val := range domains {
+        if strings.HasPrefix (val, "com.") || hasCleanSuffix(val) {
+           continue
+        }
+        if !stringInSlice(val, cleanDomains) {
+            for _, v := range domainBlacklist {
+                if !strings.Contains(val, v) {
+                    cleanDomains = append(cleanDomains, val)
+                }
+            }
+        }
+        
+    }
+    return cleanDomains
+}
 
-	for index := 0; index < len(domains); index++ {
-		if strings.HasPrefix(domains[index], "com.") {
-			continue
-		} else if strings.HasSuffix(domains[index], ".plist") {
-			continue
-		} else if strings.HasSuffix(domains[index], ".tstart") {
-			continue
-		} else if strings.HasSuffix(domains[index], ".app") {
-			continue
-		} else if strings.HasSuffix(domains[index], ".jsp") {
-			continue
-		} else if strings.HasSuffix(domains[index], "html") {
-			continue
-		} else {
-			if !stringInSlice(domains[index], cleanDomains) {
-				for _, v := range domainBlacklist {
-					if !strings.Contains(domains[index], v) {
-						cleanDomains = append(cleanDomains, domains[index])
-					}
-				}
-			}
-		}
-	}
-	return cleanDomains
+func hasCleanSuffix(input string) bool {
+    for _, val := range cleanSuffixes {
+        if strings.HasSuffix(input, val) {
+            return true 
+        }
+    }
+    return false
 }
 
 func dedup(duplist []string) []string {
